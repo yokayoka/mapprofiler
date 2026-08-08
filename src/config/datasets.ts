@@ -56,15 +56,18 @@ export const defaultTileLayerId: string = "post-rainfall-ortho";
  *
  * cogUrl は HTTP Range Request と CORS を許可する配信元である必要がある(research.md R2)。
  *
- * NOTE: 現在はローカル動作確認用に `npm run dem:serve`(`dem/cog/` を http://localhost:8787 で配信)
- * を参照している。町野地区(能登半島北部)のテスト用DEM。本番デプロイ時は、GitHub Pagesとは別の
- * CORS・Range Request対応の外部ストレージのURLに置き換えること(research.md R2)。
+ * 町野地区(能登半島北部)のテスト用DEM。Google Cloud Storage(公開バケット
+ * `mapprofiler-noto-dem`、HTTP Range Request・CORS対応済み)でホスティングしている
+ * (research.md R2)。ローカル動作確認時は `npm run dem:serve` で `dem/cog/` を
+ * http://localhost:8787 で配信する構成に切り替えてもよい。
  */
+const GCS_BUCKET_BASE = "https://storage.googleapis.com/mapprofiler-noto-dem";
+
 export const demDatasets: DemDatasetConfig[] = [
   {
     id: "pre-earthquake",
     label: "地震前(〜2022年)",
-    cogUrl: "http://localhost:8787/bfdem_machino.tif",
+    cogUrl: `${GCS_BUCKET_BASE}/bfdem_machino.tif`,
     crs: "EPSG:6675",
     resolutionM: 0.5,
     color: "#4C72B0",
@@ -72,7 +75,7 @@ export const demDatasets: DemDatasetConfig[] = [
   {
     id: "post-earthquake",
     label: "地震後・豪雨前(2024年4月)",
-    cogUrl: "http://localhost:8787/afdem_machino.tif",
+    cogUrl: `${GCS_BUCKET_BASE}/afdem_machino.tif`,
     crs: "EPSG:6675",
     resolutionM: 0.5,
     color: "#DD8452",
@@ -80,7 +83,7 @@ export const demDatasets: DemDatasetConfig[] = [
   {
     id: "post-rainfall",
     label: "豪雨後(2024年10月)",
-    cogUrl: "http://localhost:8787/afstdem_machino.tif",
+    cogUrl: `${GCS_BUCKET_BASE}/afstdem_machino.tif`,
     crs: "EPSG:6675",
     resolutionM: 0.5,
     color: "#55A868",
