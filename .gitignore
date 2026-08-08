@@ -1,0 +1,25 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+
+# DEM source/COGファイル(巨大なためリポジトリに含めない。外部ストレージでホスティングする想定 — research.md R2参照)
+dem/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
