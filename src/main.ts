@@ -3,7 +3,7 @@ import "./style.css";
 import { initMapView } from "./map/mapView";
 import { TransectDraw, type TransectPoints } from "./map/transectDraw";
 import { generateProfile } from "./geo/profileSampler";
-import { ProfileChart } from "./profile/profileChart";
+import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
 import { buildProfileFilename, downloadCanvasAsPng } from "./profile/profileExport";
 import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/mapExport";
 import { demDatasets } from "./config/datasets";
@@ -34,6 +34,32 @@ app.innerHTML = `
       <p id="form-error" class="field-error" role="alert" hidden></p>
       <button id="download-map-btn" type="button" disabled>地図をPNGでダウンロード</button>
       <p id="map-export-error" class="field-error" role="alert" hidden></p>
+      <div class="dataset-style-list">
+        <p class="dataset-style-heading">断面図の線の色・太さ</p>
+        ${demDatasets
+          .map(
+            (dataset) => `
+          <div class="dataset-style-row" data-dataset-id="${dataset.id}">
+            <span class="dataset-style-label">${dataset.label}</span>
+            <input
+              type="color"
+              class="dataset-color-input"
+              value="${dataset.color}"
+              aria-label="${dataset.label}の線の色"
+            />
+            <input
+              type="number"
+              class="dataset-width-input"
+              min="1"
+              max="10"
+              step="1"
+              value="${DEFAULT_LINE_WIDTH_PX}"
+              aria-label="${dataset.label}の線の太さ(px)"
+            />
+          </div>`,
+          )
+          .join("")}
+      </div>
     </aside>
   </main>
   <section id="profile-section" class="profile-section">
@@ -62,6 +88,24 @@ downloadProfileBtn.addEventListener("click", () => {
 
 downloadMapBtn.addEventListener("click", () => {
   void handleDownloadMap();
+});
+
+document.querySelectorAll<HTMLDivElement>(".dataset-style-row").forEach((row) => {
+  const datasetId = row.dataset.datasetId!;
+  const colorInput = row.querySelector<HTMLInputElement>(".dataset-color-input")!;
+  const widthInput = row.querySelector<HTMLInputElement>(".dataset-width-input")!;
+
+  const applyStyle = () => {
+    const lineWidthPx = Number(widthInput.value);
+    profileChart.setDatasetStyle(datasetId, {
+      color: colorInput.value,
+      lineWidthPx: lineWidthPx > 0 ? lineWidthPx : DEFAULT_LINE_WIDTH_PX,
+    });
+  };
+
+  colorInput.addEventListener("input", applyStyle);
+  widthInput.addEventListener("input", applyStyle);
+  applyStyle();
 });
 
 async function handleDownloadMap(): Promise<void> {

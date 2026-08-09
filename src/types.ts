@@ -38,6 +38,12 @@ export interface CrossSectionProfile {
   generatedAt: Date;
 }
 
+/** ユーザーが断面図の系列ごとに変更できる表示スタイル(線の色・太さ)。 */
+export interface DatasetLineStyle {
+  color: string;
+  lineWidthPx: number;
+}
+
 export interface TileLayerConfig {
   id: string;
   label: string;

@@ -55,6 +55,47 @@ body {
   margin: 0.25rem 0 0;
 }
 
+.dataset-style-list {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 0.5rem;
+}
+
+.dataset-style-heading {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem;
+}
+
+.dataset-style-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.dataset-style-label {
+  flex: 1;
+  font-size: 0.8rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls .dataset-color-input {
+  width: 2.5rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid #ccc;
+  flex: none;
+}
+
+.controls .dataset-width-input {
+  width: 3.5rem;
+  flex: none;
+}
+
 .tile-fallback-notice {
   position: absolute;
   z-index: 1000;
