@@ -83,6 +83,18 @@ body {
   white-space: nowrap;
 }
 
+.controls .show-points-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.controls .show-points-toggle input {
+  width: auto;
+  flex: none;
+}
+
 .controls .dataset-color-input {
   width: 2.5rem;
   height: 1.75rem;

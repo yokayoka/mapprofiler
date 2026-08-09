@@ -59,6 +59,10 @@ app.innerHTML = `
           </div>`,
           )
           .join("")}
+        <label class="show-points-toggle">
+          <input id="show-points-toggle" type="checkbox" checked />
+          標高サンプル点を表示する
+        </label>
       </div>
     </aside>
   </main>
@@ -106,6 +110,11 @@ document.querySelectorAll<HTMLDivElement>(".dataset-style-row").forEach((row) =>
   colorInput.addEventListener("input", applyStyle);
   widthInput.addEventListener("input", applyStyle);
   applyStyle();
+});
+
+const showPointsToggle = document.querySelector<HTMLInputElement>("#show-points-toggle")!;
+showPointsToggle.addEventListener("change", () => {
+  profileChart.setShowPoints(showPointsToggle.checked);
 });
 
 async function handleDownloadMap(): Promise<void> {

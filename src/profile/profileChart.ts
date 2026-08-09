@@ -15,6 +15,9 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, Legend, T
 /** 系列スタイルが未指定の場合の既定の線の太さ(px)。 */
 export const DEFAULT_LINE_WIDTH_PX = 2;
 
+/** 標高サンプル点(dot)を表示する場合の既定の半径(px)。 */
+const POINT_RADIUS_PX = 2;
+
 /**
  * 断面図(距離-標高グラフ)の描画。複数時期のDEMを色分けした系列として重ね、
  * 凡例クリックで系列の表示/非表示を切り替えられる(Chart.js既定の凡例トグル動作を利用、FR-014)。
@@ -25,6 +28,7 @@ export class ProfileChart {
   private readonly chart: Chart<"line">;
   private readonly styles = new Map<string, DatasetLineStyle>();
   private lastProfile: CrossSectionProfile | null = null;
+  private showPoints = true;
 
   constructor(canvas: HTMLCanvasElement) {
     this.chart = new Chart(canvas, {
@@ -64,6 +68,8 @@ export class ProfileChart {
         borderColor: style.color,
         backgroundColor: style.color,
         borderWidth: style.lineWidthPx,
+        pointRadius: this.showPoints ? POINT_RADIUS_PX : 0,
+        pointHoverRadius: this.showPoints ? POINT_RADIUS_PX + 1 : 0,
         data: profile.points.map((p) => ({
           x: p.distanceM,
           y: p.elevationByDataset[dataset.id] ?? null,
@@ -78,6 +84,14 @@ export class ProfileChart {
   /** 系列(データセット)の線の色・太さを変更する。既に断面図が描画済みなら即座に再描画する。 */
   setDatasetStyle(datasetId: string, style: DatasetLineStyle): void {
     this.styles.set(datasetId, style);
+    if (this.lastProfile) {
+      this.render(this.lastProfile);
+    }
+  }
+
+  /** 標高サンプル点(dot)の表示/非表示を切り替える。既に断面図が描画済みなら即座に再描画する。 */
+  setShowPoints(showPoints: boolean): void {
+    this.showPoints = showPoints;
     if (this.lastProfile) {
       this.render(this.lastProfile);
     }
