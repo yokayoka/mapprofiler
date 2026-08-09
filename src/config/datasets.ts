@@ -11,6 +11,13 @@ import type { DemDatasetConfig, TileLayerConfig } from "../types";
  */
 export const tileLayers: TileLayerConfig[] = [
   {
+    id: "gsi-standard",
+    label: "地理院地図(国土地理院)",
+    urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+    attribution: "出典: 国土地理院(地理院地図)",
+    maxZoom: 18,
+  },
+  {
     id: "post-rainfall-ortho",
     label: "豪雨後オルソ(2024年9月・国土地理院)",
     urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/20240923rain_wajima_0923do_sokuho/{z}/{x}/{y}.png",
