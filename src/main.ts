@@ -6,6 +6,7 @@ import { generateProfile } from "./geo/profileSampler";
 import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
 import { buildProfileFilename, downloadCanvasAsPng } from "./profile/profileExport";
 import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/mapExport";
+import { buildTransectKmlDataUrl, buildTransectKmlFilename } from "./map/transectExport";
 import { demDatasets } from "./config/datasets";
 import type { CrossSectionProfile, TransectLine } from "./types";
 
@@ -34,6 +35,7 @@ app.innerHTML = `
       <p id="form-error" class="field-error" role="alert" hidden></p>
       <button id="download-map-btn" type="button" disabled>地図をPNGでダウンロード</button>
       <p id="map-export-error" class="field-error" role="alert" hidden></p>
+      <button id="download-kml-btn" type="button" disabled>測線をKMLでダウンロード</button>
       <div class="dataset-style-list">
         <p class="dataset-style-heading">断面図の線の色・太さ</p>
         ${demDatasets
@@ -85,6 +87,7 @@ const downloadProfileBtn = document.querySelector<HTMLButtonElement>("#download-
 const downloadMapBtn = document.querySelector<HTMLButtonElement>("#download-map-btn")!;
 const mapExportError = document.querySelector<HTMLParagraphElement>("#map-export-error")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
+const downloadKmlBtn = document.querySelector<HTMLButtonElement>("#download-kml-btn")!;
 
 downloadProfileBtn.addEventListener("click", () => {
   downloadCanvasAsPng(profileChart.getCanvas(), buildProfileFilename());
@@ -92,6 +95,12 @@ downloadProfileBtn.addEventListener("click", () => {
 
 downloadMapBtn.addEventListener("click", () => {
   void handleDownloadMap();
+});
+
+downloadKmlBtn.addEventListener("click", () => {
+  if (!currentTransect) return;
+  const dataUrl = buildTransectKmlDataUrl(currentTransect);
+  downloadDataUrl(dataUrl, buildTransectKmlFilename());
 });
 
 document.querySelectorAll<HTMLDivElement>(".dataset-style-row").forEach((row) => {
@@ -138,6 +147,7 @@ transectDraw.onChange((transect) => {
   currentTransect = transect;
   generateBtn.disabled = transect === null;
   downloadMapBtn.disabled = transect === null;
+  downloadKmlBtn.disabled = transect === null;
   clearFormError();
 });
 

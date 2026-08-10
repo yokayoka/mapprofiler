@@ -1,3 +1,4 @@
+- [地理院地図・国土地理院](https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png)
 - [豪雨後オルソ・国土地理院](https://cyberjapandata.gsi.go.jp/xyz/20240923rain_wajima_0923do_sokuho/{z}/{x}/{y}.png)
 - [地震後オルソ・国土地理院](https://cyberjapandata.gsi.go.jp/xyz/20240102noto_0405_0426do/{z}/{x}/{y}.png)
 - [地震前CS立体図・森林総研](https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png)
