@@ -57,7 +57,7 @@ export const tileLayers: TileLayerConfig[] = [
     label: "豪雨後CS立体図(1mDEM)",
     urlTemplate:
       "https://storage.googleapis.com/mapprofiler-noto-dem/tiles/csmap-afstorm-1m/tiles/{z}/{x}/{y}.webp",
-    attribution: "出典: 国土交通省北陸地方整備局",
+    attribution: "出典: 国土交通省北陸地方整備局のDEMより作成",
     maxZoom: 18,
   },
 ];
