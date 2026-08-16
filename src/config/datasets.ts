@@ -52,6 +52,14 @@ export const tileLayers: TileLayerConfig[] = [
     attribution: "出典: 林野庁 赤色立体図(能登)",
     maxZoom: 18,
   },
+  {
+    id: "post-rainfall-cs-1m",
+    label: "豪雨後CS立体図(1mDEM)",
+    urlTemplate:
+      "https://storage.googleapis.com/mapprofiler-noto-dem/tiles/csmap-afstorm-1m/tiles/{z}/{x}/{y}.webp",
+    attribution: "出典: 国土交通省北陸地方整備局",
+    maxZoom: 18,
+  },
 ];
 
 /** 初期表示する背景タイル。ユーザーはレイヤー切替コントロールでいつでも変更できる。 */
