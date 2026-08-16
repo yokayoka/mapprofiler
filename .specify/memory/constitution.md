@@ -1,14 +1,19 @@
 <!--
 Sync Impact Report
-- Version change: (template, unratified) → 1.0.0
-- Modified principles: N/A (initial ratification) — defined 5 principles:
-  I. Static-Only / Serverless
-  II. Lightweight & Performance-First
-  III. Geospatial Correctness
-  IV. Simplicity (YAGNI)
-  V. Core Logic Must Be Tested
-- Added sections: Technology Constraints; Development Workflow & Quality Gates
+- Version change: 1.0.0 → 1.1.0
+- Modified principles:
+  II. 軽量性・パフォーマンス優先 (Lightweight & Performance-First) — Rationale の対象DEM解像度を
+      「0.5m」→「1m」に更新
+- Modified sections:
+  Technology Constraints > DEM データ — 解像度を「0.5m」→「1m」に更新。あわせて
+  002-expand-northern-noto で判明した「データセットごとに実測範囲が異なり得る」旨を明記
+- Rationale for version bump: 既存原則の削除・後方非互換な再定義ではないが、Technology
+  Constraints の実質的な変更(解像度方針の転換)であるため MINOR
+- Added sections: none
 - Removed sections: none
+- Background: DEM の著作権保護の観点から、当初想定していた0.5mオリジナル解像度DEMではなく、
+  1mにリサンプルしたDEMを使用する方針に転換(002-expand-northern-noto)。実用上の精度への影響は
+  軽微と判断
 - Templates requiring review (not modified by this command):
   - .specify/templates/plan-template.md ⚠ pending manual check against new principles
   - .specify/templates/spec-template.md ⚠ pending manual check against new principles
@@ -33,8 +38,8 @@ Sync Impact Report
 依存ライブラリは必要最小限に絞り、バンドルサイズと初期読み込み時間を意識する。COG (Cloud
 Optimized GeoTIFF) 形式の DEM は、ファイル全体を事前ダウンロードするのではなく、HTTP Range
 Request による部分読み込み(必要な範囲・オーバービューのみ取得)を優先する。
-**Rationale**: 対象地域の DEM は 0.5m 解像度で容量が大きく、複数時期分を扱うため、素朴な
-全体ダウンロードは実用に耐えない。
+**Rationale**: 対象地域の DEM は 1m 解像度でも能登半島北部全域・複数時期分を扱うため容量が大きく、
+素朴な全体ダウンロードは実用に耐えない。
 
 ### III. 地理空間データの正確性 (Geospatial Correctness)
 座標系変換(WGS84 ⇔ EPSG:6675)および DEM サンプリング(測線上の距離 d と標高 z の算出)は、
@@ -60,8 +65,11 @@ Request による部分読み込み(必要な範囲・オーバービューの�
 - マップ表示ライブラリ: Leaflet を使用する。
 - タイル配信: タイルアドレス(URL テンプレート)を指定することで、対象地域のタイル地図を
   参照できるようにする。
-- DEM データ: COG (Cloud Optimized GeoTIFF) 形式、空間参照系 EPSG:6675、解像度 0.5m を
-  想定する。複数時期(地震前後・豪雨前後を含む)の DEM を切り替え/比較できること。
+- DEM データ: COG (Cloud Optimized GeoTIFF) 形式、空間参照系 EPSG:6675、解像度 1m を想定する。
+  DEM 著作権保護の観点から、オリジナル解像度(0.5m 等)のデータをそのままの解像度で配信・使用
+  してはならず、1m へリサンプルした上で提供すること。複数時期(地震前後・豪雨前後を含む)の
+  DEM を切り替え/比較できること。データセットごとに実際の測量範囲(データ提供範囲)が異なり
+  得ることを前提とし、範囲外は欠損として明示すること(原則III)。
 - 対象地域: 能登半島北部(2024年1月地震および2024年9月豪雨による地形変化を対象とする)。
 - 出力機能: 断面図(PNG)、および測線をオーバーレイし縮尺を表示した地図(PNG)を、それぞれ
   ダウンロード可能にする。
@@ -87,4 +95,4 @@ Request による部分読み込み(必要な範囲・オーバービューの�
 追加や実質的拡張、PATCH: 文言修正等の非意味的な変更)、(3) Sync Impact Report をファイル
 冒頭にコメントとして記録する。
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-08 | **Last Amended**: 2026-08-08
+**Version**: 1.1.0 | **Ratified**: 2026-08-08 | **Last Amended**: 2026-08-16

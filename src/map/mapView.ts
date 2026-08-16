@@ -2,11 +2,11 @@ import L from "leaflet";
 import { defaultTileLayerId, tileLayers } from "../config/datasets";
 
 /**
- * 能登半島北部・町野地区(テスト用DEMの範囲: 概ね東経137.01-137.17度, 北緯37.35-37.50度)を
- * 初期表示範囲とする。
+ * 能登半島北部4市町(輪島市・珠洲市・能登町・穴水町)を包含する範囲(002-expand-northern-noto、
+ * EPSG:6675: x -43500〜17500, y 113000〜172500 の中心)を初期表示範囲とする。
  */
-const DEFAULT_CENTER: L.LatLngExpression = [37.4261, 137.0875];
-const DEFAULT_ZOOM = 13;
+const DEFAULT_CENTER: L.LatLngExpression = [37.28641, 137.020052];
+const DEFAULT_ZOOM = 11;
 
 export interface MapViewHandles {
   map: L.Map;

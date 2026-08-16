@@ -63,36 +63,40 @@ export const defaultTileLayerId: string = "post-rainfall-ortho";
  *
  * cogUrl は HTTP Range Request と CORS を許可する配信元である必要がある(research.md R2)。
  *
- * 町野地区(能登半島北部)のテスト用DEM。Google Cloud Storage(公開バケット
- * `mapprofiler-noto-dem`、HTTP Range Request・CORS対応済み)でホスティングしている
- * (research.md R2)。ローカル動作確認時は `npm run dem:serve` で `dem/cog/` を
- * http://localhost:8787 で配信する構成に切り替えてもよい。
+ * 能登北部4市町(輪島市・珠洲市・能登町・穴水町を包含する範囲、EPSG:6675: x -43500〜17500,
+ * y 113000〜172500)を対象とする1m解像度DEM(002-expand-northern-noto)。DEM著作権保護の
+ * ため、0.5mオリジナル解像度ではなく1mへリサンプルしたものを使用する(constitution.md
+ * Technology Constraints)。Google Cloud Storage(公開バケット`mapprofiler-noto-dem`、
+ * HTTP Range Request・CORS対応済み)でホスティングしている(001 research.md R2、002
+ * research.md R9)。町野地区限定版(0.5m、`*_machino.tif`)は同バケットに残置しているが、
+ * 本アプリでは参照しない。ローカル動作確認時は `npm run dem:serve` で `dem/cog/` を
+ * http://localhost:8787 で配信する構成に切り替えてもよい(町野地区版のみ)。
  */
 const GCS_BUCKET_BASE = "https://storage.googleapis.com/mapprofiler-noto-dem";
 
 export const demDatasets: DemDatasetConfig[] = [
   {
     id: "pre-earthquake",
-    label: "地震前(〜2022年)",
-    cogUrl: `${GCS_BUCKET_BASE}/bfdem_machino.tif`,
+    label: "地震前(2020-2022年測量)",
+    cogUrl: `${GCS_BUCKET_BASE}/bfdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
-    resolutionM: 0.5,
+    resolutionM: 1,
     color: "#4C72B0",
   },
   {
     id: "post-earthquake",
     label: "地震後・豪雨前(2024年4月)",
-    cogUrl: `${GCS_BUCKET_BASE}/afdem_machino.tif`,
+    cogUrl: `${GCS_BUCKET_BASE}/afdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
-    resolutionM: 0.5,
+    resolutionM: 1,
     color: "#DD8452",
   },
   {
     id: "post-rainfall",
-    label: "豪雨後(2024年10月)",
-    cogUrl: `${GCS_BUCKET_BASE}/afstdem_machino.tif`,
+    label: "豪雨後(2024年)",
+    cogUrl: `${GCS_BUCKET_BASE}/afstdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
-    resolutionM: 0.5,
+    resolutionM: 1,
     color: "#55A868",
   },
 ];

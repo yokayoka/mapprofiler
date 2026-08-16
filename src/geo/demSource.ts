@@ -60,7 +60,7 @@ function toElevationOrNull(value: number | undefined, noData: number | null): nu
  * 指定したEPSG:6675座標における標高値をCOGから取得する(HTTP Range Requestによる部分読込)。
  * データ提供範囲外・NoDataの場合は null を返す(FR-012)。
  *
- * 補間方式: 最近傍法(nearest-neighbor)を採用。DEMは0.5m解像度と十分に高精細であり、
+ * 補間方式: 最近傍法(nearest-neighbor)を採用。DEMは1m解像度と十分に高精細であり、
  * 実装の単純さ・速度を優先した(contracts/core-geo-api.md 参照。バイリニア法へ切り替える場合は
  * 対応するユニットテストも更新すること)。
  *
