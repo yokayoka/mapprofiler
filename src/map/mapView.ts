@@ -1,5 +1,15 @@
 import L from "leaflet";
 import { defaultTileLayerId, tileLayers } from "../config/datasets";
+import { createGlueTileLayer } from "./glueTileLayer";
+import { elevationChangeColorMapShader, elevationChangeLegend } from "./elevationChangeShader";
+
+/**
+ * 地形変化量オーバーレイ(5m色別)のタイル配信元。標高差分値をRGBにエンコードしたPNGであり、
+ * `elevationChangeColorMapShader` でクライアント側(WebGL)で色分け画像へ変換して表示する
+ * (NotoLocshare `maff_elvchange3.html` と同じデータソース・変換方式)。
+ */
+const ELEVATION_CHANGE_TILE_URL =
+  "https://forestgeo.info/opendata/17_ishikawa/noto/henka_2024/{z}/{x}/{y}.png";
 
 /**
  * 能登半島北部4市町(輪島市・珠洲市・能登町・穴水町)を包含する範囲(002-expand-northern-noto、
@@ -64,7 +74,31 @@ export function initMapView(containerId: string): MapViewHandles {
   const defaultOption = tileLayers.find((o) => o.id === defaultTileLayerId) ?? tileLayers[0];
   baseLayers[defaultOption.label]?.addTo(map);
 
-  const layersControl = L.control.layers(baseLayers, undefined, { collapsed: true }).addTo(map);
+  const elevationChangeLayer = createGlueTileLayer(ELEVATION_CHANGE_TILE_URL, {
+    attribution: "出典: 林野庁(標高差分タイルを地形変化量として色分け表示)",
+    maxZoom: 18,
+    maxNativeZoom: 14,
+    opacity: 0.7,
+    fragmentShader: elevationChangeColorMapShader,
+  });
+
+  const overlayLayers: Record<string, L.Layer> = {
+    "地形変化量(5m色別)": elevationChangeLayer,
+  };
+
+  const layersControl = L.control.layers(baseLayers, overlayLayers, { collapsed: true }).addTo(map);
+
+  const elevationChangeLegendControl = createElevationChangeLegendControl();
+  map.on("overlayadd", (event: L.LayersControlEvent) => {
+    if (event.layer === elevationChangeLayer) {
+      elevationChangeLegendControl.addTo(map);
+    }
+  });
+  map.on("overlayremove", (event: L.LayersControlEvent) => {
+    if (event.layer === elevationChangeLayer) {
+      map.removeControl(elevationChangeLegendControl);
+    }
+  });
 
   map.on("baselayerchange", () => {
     hideTileFallbackNotice(containerId);
@@ -91,4 +125,29 @@ function showTileFallbackNotice(containerId: string): void {
 function hideTileFallbackNotice(containerId: string): void {
   const container = document.getElementById(containerId);
   container?.querySelector(".tile-fallback-notice")?.remove();
+}
+
+/** 地形変化量オーバーレイの表示中のみ地図に追加する凡例コントロール(色分け区分の一覧)。 */
+function createElevationChangeLegendControl(): L.Control {
+  const legend = new L.Control({ position: "bottomleft" });
+
+  legend.onAdd = () => {
+    const div = L.DomUtil.create("div", "legend elevation-change-legend");
+
+    const title = document.createElement("div");
+    title.className = "legend-title";
+    title.textContent = "地形変化量(5m色別)";
+    div.appendChild(title);
+
+    for (const [label, color] of elevationChangeLegend) {
+      const item = document.createElement("div");
+      item.className = "legend-item";
+      item.innerHTML = `<i style="background:${color}"></i>${label}`;
+      div.appendChild(item);
+    }
+
+    return div;
+  };
+
+  return legend;
 }

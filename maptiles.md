@@ -4,3 +4,6 @@
 - [地震前CS立体図・森林総研](https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png)
 - [地震後CS立体図・林野庁](https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png)
 - [地震後赤色立体図・林野庁](https://forestgeo.info/opendata/17_ishikawa/noto/rrim_2024/{z}/{x}/{y}.webp)
+- [地形変化量(5m色別)・林野庁](https://forestgeo.info/opendata/17_ishikawa/noto/henka_2024/{z}/{x}/{y}.png)
+  (標高差分値をRGBエンコードしたPNG。フラグメントシェーダーで色分け画像へ変換して表示するオーバーレイ。
+  NotoLocshare `maff_elvchange3.html` と同じデータ・変換方式)
