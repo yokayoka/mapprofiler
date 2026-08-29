@@ -1,3 +1,9 @@
+/** 日本語・英語の2言語対応テキスト(FOSS4G Hiroshima 2026向けの英語表示対応)。 */
+export interface LocalizedText {
+  ja: string;
+  en: string;
+}
+
 export interface LatLng {
   lat: number;
   lng: number;
@@ -18,7 +24,7 @@ export interface TransectLine {
 
 export interface DemDatasetConfig {
   id: string;
-  label: string;
+  label: LocalizedText;
   cogUrl: string;
   crs: "EPSG:6675";
   resolutionM: number;
@@ -46,8 +52,8 @@ export interface DatasetLineStyle {
 
 export interface TileLayerConfig {
   id: string;
-  label: string;
+  label: LocalizedText;
   urlTemplate: string;
-  attribution: string;
+  attribution: LocalizedText;
   maxZoom: number;
 }

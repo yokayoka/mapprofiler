@@ -1,4 +1,5 @@
 import type { LatLng } from "../types";
+import { t } from "../i18n/i18n";
 
 export interface TransectForKmlExport {
   startLatLng: LatLng;
@@ -23,7 +24,7 @@ function toKmlCoordinate(point: LatLng): string {
  * KMLの座標順序は経度,緯度,標高(lng,lat,alt)である点に注意(GeoJSONと同じ順序、緯度経度の
  * 表記順とは逆)。
  */
-export function buildTransectKml(transect: TransectForKmlExport, name = "測線"): string {
+export function buildTransectKml(transect: TransectForKmlExport, name = t("kmlTransectName")): string {
   const { startLatLng, endLatLng } = transect;
   const escapedName = escapeXml(name);
   const lineCoordinates = `${toKmlCoordinate(startLatLng)} ${toKmlCoordinate(endLatLng)}`;
@@ -40,13 +41,13 @@ export function buildTransectKml(transect: TransectForKmlExport, name = "測線"
       </LineString>
     </Placemark>
     <Placemark>
-      <name>始点</name>
+      <name>${escapeXml(t("kmlStartPointName"))}</name>
       <Point>
         <coordinates>${toKmlCoordinate(startLatLng)}</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>終点</name>
+      <name>${escapeXml(t("kmlEndPointName"))}</name>
       <Point>
         <coordinates>${toKmlCoordinate(endLatLng)}</coordinates>
       </Point>

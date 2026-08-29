@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import type { CrossSectionProfile, DatasetLineStyle } from "../types";
+import { pick, t } from "../i18n/i18n";
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Legend, Tooltip, Title);
 
@@ -42,10 +43,10 @@ export class ProfileChart {
         scales: {
           x: {
             type: "linear",
-            title: { display: true, text: "始点からの距離 (m)" },
+            title: { display: true, text: t("chartAxisDistance") },
           },
           y: {
-            title: { display: true, text: "標高 (m)" },
+            title: { display: true, text: t("chartAxisElevation") },
           },
         },
         plugins: {
@@ -64,7 +65,7 @@ export class ProfileChart {
         lineWidthPx: DEFAULT_LINE_WIDTH_PX,
       };
       return {
-        label: dataset.label,
+        label: pick(dataset.label),
         borderColor: style.color,
         backgroundColor: style.color,
         borderWidth: style.lineWidthPx,

@@ -25,7 +25,7 @@ const line: TransectLine = {
 
 const dataset: DemDatasetConfig = {
   id: "ds1",
-  label: "テスト時期1",
+  label: { ja: "テスト時期1", en: "Test period 1" },
   cogUrl: "https://example.com/ds1.tif",
   crs: "EPSG:6675",
   resolutionM: 0.5,
@@ -70,7 +70,7 @@ describe("generateProfile (単一データセット)", () => {
 describe("generateProfile (複数データセット, FR-006)", () => {
   const dataset2: DemDatasetConfig = {
     id: "ds2",
-    label: "テスト時期2",
+    label: { ja: "テスト時期2", en: "Test period 2" },
     cogUrl: "https://example.com/ds2.tif",
     crs: "EPSG:6675",
     resolutionM: 0.5,

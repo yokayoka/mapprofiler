@@ -8,6 +8,10 @@ body {
 }
 
 .app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid #ddd;
 }
@@ -15,6 +19,20 @@ body {
 .app-header h1 {
   font-size: 1.1rem;
   margin: 0;
+}
+
+.lang-switch-btn {
+  flex: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.lang-switch-btn:hover {
+  background: #f2f2f2;
 }
 
 .app-main {

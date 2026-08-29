@@ -1,3 +1,5 @@
+import { t } from "../i18n/i18n";
+
 /**
  * 地図PNGエクスポートに失敗した場合の例外(FR-011)。CORS制約による失敗(research.md R5)を
  * 想定した利用者向けメッセージを持つ。
@@ -30,19 +32,13 @@ export async function exportMapAsPngDataUrl(mapContainer: HTMLElement): Promise<
     const { default: html2canvas } = await import("html2canvas");
     canvas = await html2canvas(mapContainer, { useCORS: true, logging: false });
   } catch (error) {
-    throw new MapExportError(
-      "地図のPNG化に失敗しました。背景タイルの配信元がCORSを許可していない可能性があります。",
-      error,
-    );
+    throw new MapExportError(t("mapExportErrorGeneric"), error);
   }
 
   try {
     return canvas.toDataURL("image/png");
   } catch (error) {
-    throw new MapExportError(
-      "地図のPNG化に失敗しました。背景タイルの配信元がCORSを許可していない可能性があります。",
-      error,
-    );
+    throw new MapExportError(t("mapExportErrorGeneric"), error);
   }
 }
 

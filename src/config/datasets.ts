@@ -8,56 +8,88 @@ import type { DemDatasetConfig, TileLayerConfig } from "../types";
  * 失敗する可能性がある(research.md R5)。
  *
  * maxZoom は暫定値(18)。配信元ごとのタイル提供範囲が判明次第、個別に調整すること。
+ *
+ * label/attribution は日本語・英語の2言語対応(FOSS4G Hiroshima 2026向け)。
  */
 export const tileLayers: TileLayerConfig[] = [
   {
     id: "gsi-standard",
-    label: "地理院地図(国土地理院)",
+    label: { ja: "地理院地図(国土地理院)", en: "GSI Standard Map (GSI Japan)" },
     urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-    attribution: "出典: 国土地理院(地理院地図)",
+    attribution: {
+      ja: "出典: 国土地理院(地理院地図)",
+      en: "Source: Geospatial Information Authority of Japan (GSI Maps)",
+    },
     maxZoom: 18,
   },
   {
     id: "post-rainfall-ortho",
-    label: "豪雨後オルソ(2024年9月・国土地理院)",
+    label: {
+      ja: "豪雨後オルソ(2024年9月・国土地理院)",
+      en: "Post-rainfall orthophoto (Sep 2024, GSI Japan)",
+    },
     urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/20240923rain_wajima_0923do_sokuho/{z}/{x}/{y}.png",
-    attribution: "出典: 国土地理院(令和6年9月能登豪雨 災害状況把握用オルソ画像)",
+    attribution: {
+      ja: "出典: 国土地理院(令和6年9月能登豪雨 災害状況把握用オルソ画像)",
+      en: "Source: GSI Japan (damage assessment orthophoto, Sep 2024 Noto heavy rain)",
+    },
     maxZoom: 18,
   },
   {
     id: "post-earthquake-ortho",
-    label: "地震後オルソ(2024年4月・国土地理院)",
+    label: {
+      ja: "地震後オルソ(2024年4月・国土地理院)",
+      en: "Post-earthquake orthophoto (Apr 2024, GSI Japan)",
+    },
     urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/20240102noto_0405_0426do/{z}/{x}/{y}.png",
-    attribution: "出典: 国土地理院(令和6年能登半島地震 災害状況把握用オルソ画像)",
+    attribution: {
+      ja: "出典: 国土地理院(令和6年能登半島地震 災害状況把握用オルソ画像)",
+      en: "Source: GSI Japan (damage assessment orthophoto, 2024 Noto Peninsula Earthquake)",
+    },
     maxZoom: 18,
   },
   {
     id: "pre-earthquake-cs",
-    label: "地震前CS立体図(森林総合研究所)",
+    label: { ja: "地震前CS立体図(森林総合研究所)", en: "Pre-earthquake CS relief map (FFPRI)" },
     urlTemplate: "https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png",
-    attribution: "出典: 森林総合研究所 CS立体図(能登)",
+    attribution: {
+      ja: "出典: 森林総合研究所 CS立体図(能登)",
+      en: "Source: Forestry and Forest Products Research Institute (FFPRI), CS relief map (Noto)",
+    },
     maxZoom: 18,
   },
   {
     id: "post-earthquake-cs",
-    label: "地震後CS立体図(林野庁)",
+    label: { ja: "地震後CS立体図(林野庁)", en: "Post-earthquake CS relief map (Forestry Agency)" },
     urlTemplate: "https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png",
-    attribution: "出典: 林野庁 CS立体図(能登)",
+    attribution: {
+      ja: "出典: 林野庁 CS立体図(能登)",
+      en: "Source: Forestry Agency of Japan, CS relief map (Noto)",
+    },
     maxZoom: 18,
   },
   {
     id: "post-earthquake-rrim",
-    label: "地震後赤色立体図(林野庁)",
+    label: {
+      ja: "地震後赤色立体図(林野庁)",
+      en: "Post-earthquake red relief image map (Forestry Agency)",
+    },
     urlTemplate: "https://forestgeo.info/opendata/17_ishikawa/noto/rrim_2024/{z}/{x}/{y}.webp",
-    attribution: "出典: 林野庁 赤色立体図(能登)",
+    attribution: {
+      ja: "出典: 林野庁 赤色立体図(能登)",
+      en: "Source: Forestry Agency of Japan, Red Relief Image Map (Noto)",
+    },
     maxZoom: 18,
   },
   {
     id: "post-rainfall-cs-1m",
-    label: "豪雨後CS立体図(1mDEM)",
+    label: { ja: "豪雨後CS立体図(1mDEM)", en: "Post-rainfall CS relief map (1m DEM)" },
     urlTemplate:
       "https://storage.googleapis.com/mapprofiler-noto-dem/tiles/csmap-afstorm-1m/tiles/{z}/{x}/{y}.webp",
-    attribution: "出典: 国土交通省北陸地方整備局のDEMより作成",
+    attribution: {
+      ja: "出典: 国土交通省北陸地方整備局のDEMより作成",
+      en: "Source: Created from DEM by the Hokuriku Regional Development Bureau, MLIT Japan",
+    },
     maxZoom: 18,
   },
 ];
@@ -85,7 +117,7 @@ const GCS_BUCKET_BASE = "https://storage.googleapis.com/mapprofiler-noto-dem";
 export const demDatasets: DemDatasetConfig[] = [
   {
     id: "pre-earthquake",
-    label: "地震前(2020-2022年測量)",
+    label: { ja: "地震前(2020-2022年測量)", en: "Pre-earthquake (surveyed 2020-2022)" },
     cogUrl: `${GCS_BUCKET_BASE}/bfdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
     resolutionM: 1,
@@ -93,7 +125,10 @@ export const demDatasets: DemDatasetConfig[] = [
   },
   {
     id: "post-earthquake",
-    label: "地震後・豪雨前(2024年4月)",
+    label: {
+      ja: "地震後・豪雨前(2024年4月)",
+      en: "Post-earthquake, pre-rainfall (Apr 2024)",
+    },
     cogUrl: `${GCS_BUCKET_BASE}/afdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
     resolutionM: 1,
@@ -101,7 +136,7 @@ export const demDatasets: DemDatasetConfig[] = [
   },
   {
     id: "post-rainfall",
-    label: "豪雨後(2024年)",
+    label: { ja: "豪雨後(2024年)", en: "Post-rainfall (2024)" },
     cogUrl: `${GCS_BUCKET_BASE}/afstdem_noto_north_1m.tif`,
     crs: "EPSG:6675",
     resolutionM: 1,

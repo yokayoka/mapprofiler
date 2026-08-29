@@ -68,7 +68,7 @@ vi.mock("geotiff", () => buildGeotiffMock());
 
 const dataset: DemDatasetConfig = {
   id: "test-dataset",
-  label: "テスト用データセット",
+  label: { ja: "テスト用データセット", en: "Test dataset" },
   cogUrl: "https://example.com/fake.tif",
   crs: "EPSG:6675",
   resolutionM: 0.5,

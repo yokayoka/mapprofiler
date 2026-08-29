@@ -9,6 +9,10 @@ import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/
 import { buildTransectKmlDataUrl, buildTransectKmlFilename } from "./map/transectExport";
 import { demDatasets } from "./config/datasets";
 import type { CrossSectionProfile, TransectLine } from "./types";
+import { currentLang, pick, switchLang, t } from "./i18n/i18n";
+
+document.documentElement.lang = currentLang;
+document.title = t("appTitle");
 
 const DEFAULT_SAMPLING_INTERVAL_M = 1;
 
@@ -20,34 +24,38 @@ function estimateSampleCount(lengthM: number, samplingIntervalM: number): number
   return Math.floor(lengthM / samplingIntervalM) + 1;
 }
 
+const otherLang = currentLang === "ja" ? "en" : "ja";
+
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = `
   <header class="app-header">
-    <h1>能登半島DEM断面図ビューア</h1>
+    <h1>${t("appTitle")}</h1>
+    <button id="lang-switch-btn" type="button" class="lang-switch-btn">${t("langSwitchLabel")}</button>
   </header>
   <main class="app-main">
     <div id="map"></div>
     <aside id="controls" class="controls">
-      <p>地図上で2点クリックして測線(始点・終点)を指定してください。</p>
-      <label for="sampling-interval">サンプリング間隔 (m)</label>
+      <p>${t("instructionText")}</p>
+      <label for="sampling-interval">${t("samplingIntervalLabel")}</label>
       <input id="sampling-interval" type="number" min="0" step="0.1" value="${DEFAULT_SAMPLING_INTERVAL_M}" />
-      <button id="generate-btn" type="button" disabled>断面図を作成</button>
+      <button id="generate-btn" type="button" disabled>${t("generateButton")}</button>
       <p id="form-error" class="field-error" role="alert" hidden></p>
-      <button id="download-map-btn" type="button" disabled>地図をPNGでダウンロード</button>
+      <button id="download-map-btn" type="button" disabled>${t("downloadMapButton")}</button>
       <p id="map-export-error" class="field-error" role="alert" hidden></p>
-      <button id="download-kml-btn" type="button" disabled>測線をKMLでダウンロード</button>
+      <button id="download-kml-btn" type="button" disabled>${t("downloadKmlButton")}</button>
       <div class="dataset-style-list">
-        <p class="dataset-style-heading">断面図の線の色・太さ</p>
+        <p class="dataset-style-heading">${t("datasetStyleHeading")}</p>
         ${demDatasets
-          .map(
-            (dataset) => `
+          .map((dataset) => {
+            const label = pick(dataset.label);
+            return `
           <div class="dataset-style-row" data-dataset-id="${dataset.id}">
-            <span class="dataset-style-label">${dataset.label}</span>
+            <span class="dataset-style-label">${label}</span>
             <input
               type="color"
               class="dataset-color-input"
               value="${dataset.color}"
-              aria-label="${dataset.label}の線の色"
+              aria-label="${t("datasetColorAriaLabel", { label })}"
             />
             <input
               type="number"
@@ -56,23 +64,27 @@ app.innerHTML = `
               max="10"
               step="1"
               value="${DEFAULT_LINE_WIDTH_PX}"
-              aria-label="${dataset.label}の線の太さ(px)"
+              aria-label="${t("datasetWidthAriaLabel", { label })}"
             />
-          </div>`,
-          )
+          </div>`;
+          })
           .join("")}
         <label class="show-points-toggle">
           <input id="show-points-toggle" type="checkbox" checked />
-          標高サンプル点を表示する
+          ${t("showPointsToggleLabel")}
         </label>
       </div>
     </aside>
   </main>
   <section id="profile-section" class="profile-section">
     <canvas id="profile-canvas"></canvas>
-    <button id="download-profile-btn" type="button" disabled>断面図をPNGでダウンロード</button>
+    <button id="download-profile-btn" type="button" disabled>${t("downloadProfileButton")}</button>
   </section>
 `;
+
+document.querySelector<HTMLButtonElement>("#lang-switch-btn")!.addEventListener("click", () => {
+  switchLang(otherLang);
+});
 
 const { map } = initMapView("map");
 const transectDraw = new TransectDraw(map);
@@ -134,7 +146,7 @@ async function handleDownloadMap(): Promise<void> {
     downloadDataUrl(dataUrl, buildMapFilename());
   } catch (error) {
     mapExportError.textContent =
-      error instanceof Error ? error.message : "地図のPNG化に失敗しました。";
+      error instanceof Error ? error.message : t("mapExportErrorGeneric");
     mapExportError.hidden = false;
   } finally {
     downloadMapBtn.disabled = false;
@@ -159,13 +171,13 @@ async function handleGenerateProfile(): Promise<void> {
   clearFormError();
 
   if (!currentTransect) {
-    showFormError("地図上で測線(始点・終点)を指定してください。");
+    showFormError(t("formErrorNoTransect"));
     return;
   }
 
   const samplingIntervalM = Number(samplingIntervalInput.value);
   if (!(samplingIntervalM > 0)) {
-    showFormError("サンプリング間隔は0より大きい数値を指定してください。");
+    showFormError(t("formErrorInvalidInterval"));
     return;
   }
 
@@ -181,8 +193,7 @@ async function handleGenerateProfile(): Promise<void> {
   const estimatedSampleCount = estimateSampleCount(lengthM, samplingIntervalM);
   if (lengthM > CONFIRM_LENGTH_THRESHOLD_M || estimatedSampleCount > CONFIRM_SAMPLE_COUNT_THRESHOLD) {
     const proceed = window.confirm(
-      `測線長は約${Math.round(lengthM)}m、推定サンプル点数は約${estimatedSampleCount}点です。` +
-        `処理に時間がかかる可能性があります。続行しますか?`,
+      t("confirmLargeTransect", { lengthM: Math.round(lengthM), count: estimatedSampleCount }),
     );
     if (!proceed) return;
   }
@@ -202,9 +213,9 @@ async function handleGenerateProfile(): Promise<void> {
 
 function describeProfileError(error: unknown): string {
   if (error instanceof Error && error.message.includes("must not be the same location")) {
-    return "始点と終点が同じ地点です。異なる2点をクリックし直してください。";
+    return t("profileErrorSameLocation");
   }
-  return "断面図の作成に失敗しました。測線やDEM設定を確認してください。";
+  return t("profileErrorGeneric");
 }
 
 function showFormError(message: string): void {
