@@ -13,6 +13,13 @@ const ELEVATION_CHANGE_TILE_URL =
   "https://forestgeo.info/opendata/17_ishikawa/noto/henka_2024/{z}/{x}/{y}.png";
 
 /**
+ * 能登飯田地質図(産総研シームレス地質図、5万分の1「珠洲岬-能登飯田」図幅)のWMTSタイル配信元。
+ * URLのタイル座標順が {z}/{y}/{x} である点に注意(配信元WMTS仕様どおり)。
+ */
+const GEOLOGY_TILE_URL =
+  "https://gbank.gsj.jp/geonavi/maptile/wmts/1.0.0/G50_10_003004006007suzumisaki-notoiida/default/EPSG900913/{z}/{y}/{x}.png";
+
+/**
  * 能登半島北部4市町(輪島市・珠洲市・能登町・穴水町)を包含する範囲(002-expand-northern-noto、
  * EPSG:6675: x -43500〜17500, y 113000〜172500 の中心)を初期表示範囲とする。
  */
@@ -83,8 +90,15 @@ export function initMapView(containerId: string): MapViewHandles {
     fragmentShader: elevationChangeColorMapShader,
   });
 
+  const geologyLayer = L.tileLayer(GEOLOGY_TILE_URL, {
+    attribution: t("geologyAttribution"),
+    maxZoom: 18,
+    opacity: 0.7,
+  });
+
   const overlayLayers: Record<string, L.Layer> = {
     [t("elevationChangeLayerName")]: elevationChangeLayer,
+    [t("geologyLayerName")]: geologyLayer,
   };
 
   const layersControl = L.control.layers(baseLayers, overlayLayers, { collapsed: true }).addTo(map);

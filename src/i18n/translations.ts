@@ -26,6 +26,8 @@ export type TranslationKey =
   | "elevationChangeLayerName"
   | "elevationChangeAttribution"
   | "elevationChangeLegendTitle"
+  | "geologyLayerName"
+  | "geologyAttribution"
   | "chartAxisDistance"
   | "chartAxisElevation"
   | "kmlTransectName"
@@ -60,6 +62,8 @@ const ja: Translations = {
   elevationChangeLayerName: "地形変化量(5m色別)",
   elevationChangeAttribution: "出典: 林野庁(標高差分タイルを地形変化量として色分け表示)",
   elevationChangeLegendTitle: "地形変化量(5m色別)",
+  geologyLayerName: "能登飯田地質図(産総研)",
+  geologyAttribution: "出典: 産業技術総合研究所 地質調査総合センター シームレス地質図(能登飯田)",
   chartAxisDistance: "始点からの距離 (m)",
   chartAxisElevation: "標高 (m)",
   kmlTransectName: "測線",
@@ -94,6 +98,9 @@ const en: Translations = {
   elevationChangeAttribution:
     "Source: Forestry Agency of Japan (elevation-difference tiles rendered as color-coded terrain change)",
   elevationChangeLegendTitle: "Elevation change (5 m color-coded)",
+  geologyLayerName: "Noto Iida geological map (AIST)",
+  geologyAttribution:
+    "Source: Geological Survey of Japan, AIST, Seamless Digital Geological Map of Japan (Noto Iida)",
   chartAxisDistance: "Distance from start (m)",
   chartAxisElevation: "Elevation (m)",
   kmlTransectName: "Transect",

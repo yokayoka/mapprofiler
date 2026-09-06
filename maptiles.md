@@ -7,3 +7,5 @@
 - [地形変化量(5m色別)・林野庁](https://forestgeo.info/opendata/17_ishikawa/noto/henka_2024/{z}/{x}/{y}.png)
   (標高差分値をRGBエンコードしたPNG。フラグメントシェーダーで色分け画像へ変換して表示するオーバーレイ。
   NotoLocshare `maff_elvchange3.html` と同じデータ・変換方式)
+- [能登飯田地質図・産総研](https://gbank.gsj.jp/geonavi/maptile/wmts/1.0.0/G50_10_003004006007suzumisaki-notoiida/default/EPSG900913/{z}/{y}/{x}.png)
+  (タイル座標順が{z}/{y}/{x}である点に注意。産総研シームレス地質図の5万分の1「珠洲岬-能登飯田」図幅)
