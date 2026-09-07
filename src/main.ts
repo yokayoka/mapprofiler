@@ -13,6 +13,11 @@ import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
 import { buildProfileFilename, downloadCanvasAsPng } from "./profile/profileExport";
 import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/mapExport";
 import { buildTransectKmlDataUrl, buildTransectKmlFilename } from "./map/transectExport";
+import {
+  buildTransectShapefileFilename,
+  buildTransectShapefileZip,
+  downloadBlob,
+} from "./map/shapefileExport";
 import { demDatasets } from "./config/datasets";
 import type { CrossSectionProfile, TransectLine, UpliftCorrectionSettings } from "./types";
 import { currentLang, pick, switchLang, t } from "./i18n/i18n";
@@ -52,6 +57,7 @@ app.innerHTML = `
       <button id="download-map-btn" type="button" disabled>${t("downloadMapButton")}</button>
       <p id="map-export-error" class="field-error" role="alert" hidden></p>
       <button id="download-kml-btn" type="button" disabled>${t("downloadKmlButton")}</button>
+      <button id="download-shapefile-btn" type="button" disabled>${t("downloadShapefileButton")}</button>
       <div class="dataset-style-list">
         <p class="dataset-style-heading">${t("datasetStyleHeading")}</p>
         ${demDatasets
@@ -138,6 +144,7 @@ const downloadMapBtn = document.querySelector<HTMLButtonElement>("#download-map-
 const mapExportError = document.querySelector<HTMLParagraphElement>("#map-export-error")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
 const downloadKmlBtn = document.querySelector<HTMLButtonElement>("#download-kml-btn")!;
+const downloadShapefileBtn = document.querySelector<HTMLButtonElement>("#download-shapefile-btn")!;
 const upliftValueInput = document.querySelector<HTMLInputElement>("#uplift-value")!;
 const upliftShowOriginalRow = document.querySelector<HTMLLabelElement>("#uplift-show-original-row")!;
 const upliftShowOriginalToggle = document.querySelector<HTMLInputElement>(
@@ -159,6 +166,15 @@ downloadKmlBtn.addEventListener("click", () => {
   if (!currentTransect) return;
   const dataUrl = buildTransectKmlDataUrl(currentTransect);
   downloadDataUrl(dataUrl, buildTransectKmlFilename());
+});
+
+downloadShapefileBtn.addEventListener("click", () => {
+  if (!currentTransect) return;
+  const zipBytes = buildTransectShapefileZip(currentTransect);
+  downloadBlob(
+    new Blob([zipBytes.buffer as ArrayBuffer], { type: "application/zip" }),
+    buildTransectShapefileFilename(),
+  );
 });
 
 document.querySelectorAll<HTMLDivElement>(".dataset-style-row").forEach((row) => {
@@ -269,6 +285,7 @@ transectDraw.onChange((transect) => {
   generateBtn.disabled = transect === null;
   downloadMapBtn.disabled = transect === null;
   downloadKmlBtn.disabled = transect === null;
+  downloadShapefileBtn.disabled = transect === null;
   clearFormError();
 });
 

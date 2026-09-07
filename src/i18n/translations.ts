@@ -11,6 +11,7 @@ export type TranslationKey =
   | "generateButton"
   | "downloadMapButton"
   | "downloadKmlButton"
+  | "downloadShapefileButton"
   | "datasetStyleHeading"
   | "datasetColorAriaLabel"
   | "datasetWidthAriaLabel"
@@ -49,6 +50,7 @@ const ja: Translations = {
   generateButton: "断面図を作成",
   downloadMapButton: "地図をPNGでダウンロード",
   downloadKmlButton: "測線をKMLでダウンロード",
+  downloadShapefileButton: "測線をShapefileでダウンロード",
   datasetStyleHeading: "断面図の線の色・太さ",
   datasetColorAriaLabel: "{label}の線の色",
   datasetWidthAriaLabel: "{label}の線の太さ(px)",
@@ -89,6 +91,7 @@ const en: Translations = {
   generateButton: "Generate profile",
   downloadMapButton: "Download map as PNG",
   downloadKmlButton: "Download transect as KML",
+  downloadShapefileButton: "Download transect as Shapefile",
   datasetStyleHeading: "Line color & width for each dataset",
   datasetColorAriaLabel: "Line color for {label}",
   datasetWidthAriaLabel: "Line width (px) for {label}",

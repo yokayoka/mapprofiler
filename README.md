@@ -57,6 +57,14 @@ npm run lint
 補正の対象は `src/config/datasets.ts` の `demDatasets` 内、`id: "pre-earthquake"` のデータセット
 固定です(断面全体で隆起量が一定とみなす簡易モデル)。
 
+## 測線Shapefileダウンロード(004-transect-shapefile-export)
+
+地図上で測線(始点・終点)を指定すると、「測線をShapefileでダウンロード」ボタンが有効になり、
+測線を1本のポリライン(始点→終点、WGS84座標系)として含むESRI Shapefile一式
+(`.shp`/`.shx`/`.dbf`/`.prj`)をまとめたzipファイルをダウンロードできます。QGISやArcGISなど
+他のGISソフトウェアにそのまま読み込めます。断面図を作成する前でも、測線さえ指定していれば
+ダウンロード可能です(既存の「測線をKMLでダウンロード」ボタンと同じ条件)。
+
 ## 運用者向け設定
 
 エンドユーザー向けの設定変更UIは提供していません(FR-015)。以下の設定はビルド前に
