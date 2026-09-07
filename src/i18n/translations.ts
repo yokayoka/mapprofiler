@@ -33,7 +33,11 @@ export type TranslationKey =
   | "kmlTransectName"
   | "kmlStartPointName"
   | "kmlEndPointName"
-  | "langSwitchLabel";
+  | "langSwitchLabel"
+  | "upliftHeading"
+  | "upliftValueLabel"
+  | "upliftEnabledToggleLabel"
+  | "upliftCorrectedLabel";
 
 type Translations = Record<TranslationKey, string>;
 
@@ -70,6 +74,10 @@ const ja: Translations = {
   kmlStartPointName: "始点",
   kmlEndPointName: "終点",
   langSwitchLabel: "English",
+  upliftHeading: "隆起補正",
+  upliftValueLabel: "隆起量 (m)",
+  upliftEnabledToggleLabel: "隆起補正後の地震前地形を表示する",
+  upliftCorrectedLabel: "{label}(隆起補正 {upliftM}m)",
 };
 
 const en: Translations = {
@@ -107,6 +115,10 @@ const en: Translations = {
   kmlStartPointName: "Start point",
   kmlEndPointName: "End point",
   langSwitchLabel: "日本語",
+  upliftHeading: "Uplift correction",
+  upliftValueLabel: "Uplift (m)",
+  upliftEnabledToggleLabel: "Show uplift-corrected pre-earthquake terrain",
+  upliftCorrectedLabel: "{label} (uplift-corrected {upliftM}m)",
 };
 
 export const translations: Record<Lang, Translations> = { ja, en };

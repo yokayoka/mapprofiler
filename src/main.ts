@@ -3,13 +3,21 @@ import "./style.css";
 import { initMapView } from "./map/mapView";
 import { TransectDraw, type TransectPoints } from "./map/transectDraw";
 import { generateProfile } from "./geo/profileSampler";
+import {
+  applyUpliftCorrection,
+  buildUpliftCorrectedDatasetId,
+  UPLIFT_CORRECTED_DEFAULT_COLOR,
+} from "./geo/upliftCorrection";
 import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
 import { buildProfileFilename, downloadCanvasAsPng } from "./profile/profileExport";
 import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/mapExport";
 import { buildTransectKmlDataUrl, buildTransectKmlFilename } from "./map/transectExport";
 import { demDatasets } from "./config/datasets";
-import type { CrossSectionProfile, TransectLine } from "./types";
+import type { CrossSectionProfile, TransectLine, UpliftCorrectionSettings } from "./types";
 import { currentLang, pick, switchLang, t } from "./i18n/i18n";
+
+/** 隆起補正の対象データセット(spec.md Assumptions: 地震前データセットのみを対象とする)。 */
+const UPLIFT_BASE_DATASET_ID = "pre-earthquake";
 
 document.documentElement.lang = currentLang;
 document.title = t("appTitle");
@@ -74,6 +82,35 @@ app.innerHTML = `
           ${t("showPointsToggleLabel")}
         </label>
       </div>
+      <div class="uplift-section">
+        <p class="dataset-style-heading">${t("upliftHeading")}</p>
+        <label for="uplift-value">${t("upliftValueLabel")}</label>
+        <input id="uplift-value" type="number" step="0.1" value="0" />
+        <label class="show-points-toggle">
+          <input id="uplift-enabled-toggle" type="checkbox" />
+          ${t("upliftEnabledToggleLabel")}
+        </label>
+        <div class="dataset-style-row" id="uplift-style-row" hidden>
+          <span class="dataset-style-label">${t("upliftHeading")}</span>
+          <input
+            id="uplift-color-input"
+            type="color"
+            class="dataset-color-input"
+            value="${UPLIFT_CORRECTED_DEFAULT_COLOR}"
+            aria-label="${t("datasetColorAriaLabel", { label: t("upliftHeading") })}"
+          />
+          <input
+            id="uplift-width-input"
+            type="number"
+            class="dataset-width-input"
+            min="1"
+            max="10"
+            step="1"
+            value="${DEFAULT_LINE_WIDTH_PX}"
+            aria-label="${t("datasetWidthAriaLabel", { label: t("upliftHeading") })}"
+          />
+        </div>
+      </div>
     </aside>
   </main>
   <section id="profile-section" class="profile-section">
@@ -100,6 +137,11 @@ const downloadMapBtn = document.querySelector<HTMLButtonElement>("#download-map-
 const mapExportError = document.querySelector<HTMLParagraphElement>("#map-export-error")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
 const downloadKmlBtn = document.querySelector<HTMLButtonElement>("#download-kml-btn")!;
+const upliftValueInput = document.querySelector<HTMLInputElement>("#uplift-value")!;
+const upliftEnabledToggle = document.querySelector<HTMLInputElement>("#uplift-enabled-toggle")!;
+const upliftStyleRow = document.querySelector<HTMLDivElement>("#uplift-style-row")!;
+const upliftColorInput = document.querySelector<HTMLInputElement>("#uplift-color-input")!;
+const upliftWidthInput = document.querySelector<HTMLInputElement>("#uplift-width-input")!;
 
 downloadProfileBtn.addEventListener("click", () => {
   downloadCanvasAsPng(profileChart.getCanvas(), buildProfileFilename());
@@ -154,6 +196,47 @@ async function handleDownloadMap(): Promise<void> {
 }
 
 let currentTransect: TransectPoints | null = null;
+let currentProfile: CrossSectionProfile | null = null;
+
+/**
+ * 隆起補正の設定(003-uplift-correction)。値は`upliftValueInput`/`upliftEnabledToggle`の
+ * 入力イベントで更新され、`generateProfile()`をやり直さずに`renderProfileWithUplift()`が
+ * 断面図を再描画する(FR-003)。
+ */
+const upliftSettings: UpliftCorrectionSettings = {
+  baseDatasetId: UPLIFT_BASE_DATASET_ID,
+  upliftM: 0,
+  enabled: false,
+};
+
+/** 直近に生成した断面図に隆起補正を適用して再描画する(DEM再取得なし)。 */
+function renderProfileWithUplift(): void {
+  if (!currentProfile) return;
+  profileChart.render(applyUpliftCorrection(currentProfile, upliftSettings));
+}
+
+function updateUpliftSettingsFromInputs(): void {
+  const value = Number(upliftValueInput.value);
+  upliftSettings.upliftM = value;
+  upliftSettings.enabled = upliftEnabledToggle.checked && Number.isFinite(value);
+  upliftStyleRow.hidden = !upliftSettings.enabled;
+  renderProfileWithUplift();
+}
+
+upliftValueInput.addEventListener("input", updateUpliftSettingsFromInputs);
+upliftEnabledToggle.addEventListener("change", updateUpliftSettingsFromInputs);
+
+function applyUpliftStyle(): void {
+  const lineWidthPx = Number(upliftWidthInput.value);
+  profileChart.setDatasetStyle(buildUpliftCorrectedDatasetId(upliftSettings.baseDatasetId), {
+    color: upliftColorInput.value,
+    lineWidthPx: lineWidthPx > 0 ? lineWidthPx : DEFAULT_LINE_WIDTH_PX,
+  });
+}
+
+upliftColorInput.addEventListener("input", applyUpliftStyle);
+upliftWidthInput.addEventListener("input", applyUpliftStyle);
+applyUpliftStyle();
 
 transectDraw.onChange((transect) => {
   currentTransect = transect;
@@ -201,9 +284,11 @@ async function handleGenerateProfile(): Promise<void> {
   generateBtn.disabled = true;
   try {
     const profile: CrossSectionProfile = await generateProfile(line, demDatasets);
-    profileChart.render(profile);
+    currentProfile = profile;
+    renderProfileWithUplift();
     downloadProfileBtn.disabled = false;
   } catch (error) {
+    currentProfile = null;
     downloadProfileBtn.disabled = true;
     showFormError(describeProfileError(error));
   } finally {

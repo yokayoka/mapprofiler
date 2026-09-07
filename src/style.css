@@ -73,7 +73,8 @@ body {
   margin: 0.25rem 0 0;
 }
 
-.dataset-style-list {
+.dataset-style-list,
+.uplift-section {
   margin-top: 1rem;
   border-top: 1px solid #ddd;
   padding-top: 0.5rem;

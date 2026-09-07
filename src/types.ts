@@ -50,6 +50,17 @@ export interface DatasetLineStyle {
   lineWidthPx: number;
 }
 
+/**
+ * 隆起補正の設定(003-uplift-correction)。断面(測線)ごとにユーザーが入力する単一の値で、
+ * 測線内では隆起量が一定であるとみなす簡易モデル(spec.md Assumptions)。
+ * `baseDatasetId` の標高値に `upliftM` を加算した仮想系列を断面図に追加表示する際に用いる。
+ */
+export interface UpliftCorrectionSettings {
+  baseDatasetId: string;
+  upliftM: number;
+  enabled: boolean;
+}
+
 export interface TileLayerConfig {
   id: string;
   label: LocalizedText;
