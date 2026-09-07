@@ -9,7 +9,7 @@ import {
   formatSignedMeters,
   UPLIFT_CORRECTED_DEFAULT_COLOR,
 } from "./geo/upliftCorrection";
-import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
+import { DEFAULT_FONT_SIZE_PX, DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
 import { buildProfileFilename, downloadCanvasAsPng } from "./profile/profileExport";
 import { buildMapFilename, downloadDataUrl, exportMapAsPngDataUrl } from "./map/mapExport";
 import { buildTransectKmlDataUrl, buildTransectKmlFilename } from "./map/transectExport";
@@ -88,6 +88,15 @@ app.innerHTML = `
           <input id="show-points-toggle" type="checkbox" checked />
           ${t("showPointsToggleLabel")}
         </label>
+        <label for="font-size-input">${t("fontSizeLabel")}</label>
+        <input
+          id="font-size-input"
+          type="number"
+          min="6"
+          max="32"
+          step="1"
+          value="${DEFAULT_FONT_SIZE_PX}"
+        />
       </div>
       <div class="uplift-section">
         <p class="dataset-style-heading">${t("upliftHeading")}</p>
@@ -198,6 +207,12 @@ document.querySelectorAll<HTMLDivElement>(".dataset-style-row").forEach((row) =>
 const showPointsToggle = document.querySelector<HTMLInputElement>("#show-points-toggle")!;
 showPointsToggle.addEventListener("change", () => {
   profileChart.setShowPoints(showPointsToggle.checked);
+});
+
+const fontSizeInput = document.querySelector<HTMLInputElement>("#font-size-input")!;
+fontSizeInput.addEventListener("input", () => {
+  const fontSizePx = Number(fontSizeInput.value);
+  profileChart.setFontSizePx(fontSizePx > 0 ? fontSizePx : DEFAULT_FONT_SIZE_PX);
 });
 
 async function handleDownloadMap(): Promise<void> {

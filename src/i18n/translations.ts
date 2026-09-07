@@ -16,6 +16,7 @@ export type TranslationKey =
   | "datasetColorAriaLabel"
   | "datasetWidthAriaLabel"
   | "showPointsToggleLabel"
+  | "fontSizeLabel"
   | "downloadProfileButton"
   | "formErrorNoTransect"
   | "formErrorInvalidInterval"
@@ -55,6 +56,7 @@ const ja: Translations = {
   datasetColorAriaLabel: "{label}の線の色",
   datasetWidthAriaLabel: "{label}の線の太さ(px)",
   showPointsToggleLabel: "標高サンプル点を表示する",
+  fontSizeLabel: "フォントサイズ (px)",
   downloadProfileButton: "断面図をPNGでダウンロード",
   formErrorNoTransect: "地図上で測線(始点・終点)を指定してください。",
   formErrorInvalidInterval: "サンプリング間隔は0より大きい数値を指定してください。",
@@ -96,6 +98,7 @@ const en: Translations = {
   datasetColorAriaLabel: "Line color for {label}",
   datasetWidthAriaLabel: "Line width (px) for {label}",
   showPointsToggleLabel: "Show elevation sample points",
+  fontSizeLabel: "Font size (px)",
   downloadProfileButton: "Download profile as PNG",
   formErrorNoTransect: "Please specify the transect (start and end points) on the map.",
   formErrorInvalidInterval: "Please enter a sampling interval greater than 0.",
