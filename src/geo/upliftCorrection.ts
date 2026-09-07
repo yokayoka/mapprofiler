@@ -10,7 +10,7 @@ export function buildUpliftCorrectedDatasetId(baseDatasetId: string): string {
   return `${baseDatasetId}${ID_SUFFIX}`;
 }
 
-function formatSignedMeters(upliftM: number): string {
+export function formatSignedMeters(upliftM: number): string {
   const sign = upliftM > 0 ? "+" : "";
   return `${sign}${upliftM}`;
 }

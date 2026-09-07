@@ -138,6 +138,27 @@ DEM再取得なしで断面図に追加表示される
 
 ---
 
+## Phase 7: 実機確認フィードバックに基づく調整(追加要望)
+
+**Purpose**: 実機での動作確認結果を受け、チェックボックスの意味とグラフ内の補正明示を見直す
+(spec.md User Story 2 / FR-005 / FR-006 を更新)
+
+- [X] T014 [US1] 隆起量に0以外の有効な数値が入力された場合に自動的に補正後系列を表示するよう
+  `src/main.ts` の`updateUpliftSettingsFromInputs()`を変更する(`enabled`をチェックボックスではなく
+  入力値から判定)。あわせて`ProfileChart.setTitle()`(`src/profile/profileChart.ts`に新設)で
+  グラフタイトルに適用中の隆起量(`upliftAnnotationLabel`、`formatSignedMeters()`)を表示し、
+  補正済みであることを明示する(FR-005)
+- [X] T015 [US2] チェックボックスの意味を「補正後系列の表示/非表示」から「隆起補正前(元)の
+  地震前系列の表示/非表示」に変更する(`src/main.ts`のDOM ID・翻訳キーを
+  `upliftShowOriginalToggleLabel`に変更、`renderProfileWithUplift()`で
+  `visibleDatasetIds`から`baseDatasetId`を除外する処理を実装)。補正が適用されていない間は
+  この切替が地震前系列の表示状態に影響しないようにする(FR-006)
+
+**Checkpoint**: 隆起量入力だけで補正後系列が自動表示され、グラフ内に隆起量が明示され、
+チェックボックスは元の地震前系列の表示切替として機能する
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

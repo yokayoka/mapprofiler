@@ -98,6 +98,20 @@ export class ProfileChart {
     }
   }
 
+  /**
+   * グラフ上部のタイトルを設定する。`null`でタイトルを非表示にする。
+   * 隆起補正(003-uplift-correction)を適用したことを明示するために使用する。
+   */
+  setTitle(text: string | null): void {
+    const titleOptions = this.chart.options.plugins?.title;
+    if (!titleOptions) return;
+    titleOptions.display = text !== null;
+    if (text !== null) {
+      titleOptions.text = text;
+    }
+    this.chart.update();
+  }
+
   clear(): void {
     this.lastProfile = null;
     this.chart.data.datasets = [];

@@ -36,8 +36,9 @@ export type TranslationKey =
   | "langSwitchLabel"
   | "upliftHeading"
   | "upliftValueLabel"
-  | "upliftEnabledToggleLabel"
-  | "upliftCorrectedLabel";
+  | "upliftShowOriginalToggleLabel"
+  | "upliftCorrectedLabel"
+  | "upliftAnnotationLabel";
 
 type Translations = Record<TranslationKey, string>;
 
@@ -76,8 +77,9 @@ const ja: Translations = {
   langSwitchLabel: "English",
   upliftHeading: "隆起補正",
   upliftValueLabel: "隆起量 (m)",
-  upliftEnabledToggleLabel: "隆起補正後の地震前地形を表示する",
+  upliftShowOriginalToggleLabel: "隆起補正前の地震前地形も表示する",
   upliftCorrectedLabel: "{label}(隆起補正 {upliftM}m)",
+  upliftAnnotationLabel: "隆起補正 {upliftM}m を適用",
 };
 
 const en: Translations = {
@@ -117,8 +119,9 @@ const en: Translations = {
   langSwitchLabel: "日本語",
   upliftHeading: "Uplift correction",
   upliftValueLabel: "Uplift (m)",
-  upliftEnabledToggleLabel: "Show uplift-corrected pre-earthquake terrain",
+  upliftShowOriginalToggleLabel: "Also show pre-earthquake terrain (before correction)",
   upliftCorrectedLabel: "{label} (uplift-corrected {upliftM}m)",
+  upliftAnnotationLabel: "Uplift correction {upliftM}m applied",
 };
 
 export const translations: Record<Lang, Translations> = { ja, en };

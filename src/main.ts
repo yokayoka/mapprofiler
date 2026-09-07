@@ -6,6 +6,7 @@ import { generateProfile } from "./geo/profileSampler";
 import {
   applyUpliftCorrection,
   buildUpliftCorrectedDatasetId,
+  formatSignedMeters,
   UPLIFT_CORRECTED_DEFAULT_COLOR,
 } from "./geo/upliftCorrection";
 import { DEFAULT_LINE_WIDTH_PX, ProfileChart } from "./profile/profileChart";
@@ -86,9 +87,9 @@ app.innerHTML = `
         <p class="dataset-style-heading">${t("upliftHeading")}</p>
         <label for="uplift-value">${t("upliftValueLabel")}</label>
         <input id="uplift-value" type="number" step="0.1" value="0" />
-        <label class="show-points-toggle">
-          <input id="uplift-enabled-toggle" type="checkbox" />
-          ${t("upliftEnabledToggleLabel")}
+        <label class="show-points-toggle" id="uplift-show-original-row" hidden>
+          <input id="uplift-show-original-toggle" type="checkbox" checked />
+          ${t("upliftShowOriginalToggleLabel")}
         </label>
         <div class="dataset-style-row" id="uplift-style-row" hidden>
           <span class="dataset-style-label">${t("upliftHeading")}</span>
@@ -138,7 +139,10 @@ const mapExportError = document.querySelector<HTMLParagraphElement>("#map-export
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
 const downloadKmlBtn = document.querySelector<HTMLButtonElement>("#download-kml-btn")!;
 const upliftValueInput = document.querySelector<HTMLInputElement>("#uplift-value")!;
-const upliftEnabledToggle = document.querySelector<HTMLInputElement>("#uplift-enabled-toggle")!;
+const upliftShowOriginalRow = document.querySelector<HTMLLabelElement>("#uplift-show-original-row")!;
+const upliftShowOriginalToggle = document.querySelector<HTMLInputElement>(
+  "#uplift-show-original-toggle",
+)!;
 const upliftStyleRow = document.querySelector<HTMLDivElement>("#uplift-style-row")!;
 const upliftColorInput = document.querySelector<HTMLInputElement>("#uplift-color-input")!;
 const upliftWidthInput = document.querySelector<HTMLInputElement>("#uplift-width-input")!;
@@ -199,9 +203,11 @@ let currentTransect: TransectPoints | null = null;
 let currentProfile: CrossSectionProfile | null = null;
 
 /**
- * 隆起補正の設定(003-uplift-correction)。値は`upliftValueInput`/`upliftEnabledToggle`の
- * 入力イベントで更新され、`generateProfile()`をやり直さずに`renderProfileWithUplift()`が
- * 断面図を再描画する(FR-003)。
+ * 隆起補正の設定(003-uplift-correction)。`upliftValueInput`の入力イベントで更新され、
+ * `generateProfile()`をやり直さずに`renderProfileWithUplift()`が断面図を再描画する(FR-003)。
+ * 0以外の有効な数値が入力されると自動的に補正後系列を表示する(`enabled`はチェックボックスでは
+ * なく入力値そのものから決まる)。`upliftShowOriginalToggle`は、補正後系列とは独立に、
+ * 補正前(元)の地震前系列を表示し続けるかどうかを切り替える。
  */
 const upliftSettings: UpliftCorrectionSettings = {
   baseDatasetId: UPLIFT_BASE_DATASET_ID,
@@ -209,22 +215,42 @@ const upliftSettings: UpliftCorrectionSettings = {
   enabled: false,
 };
 
-/** 直近に生成した断面図に隆起補正を適用して再描画する(DEM再取得なし)。 */
+/**
+ * 直近に生成した断面図に隆起補正を適用して再描画する(DEM再取得なし)。補正が適用されている間は、
+ * グラフタイトルに隆起量を表示して補正済みであることを明示する(FR-005)。
+ */
 function renderProfileWithUplift(): void {
   if (!currentProfile) return;
-  profileChart.render(applyUpliftCorrection(currentProfile, upliftSettings));
+
+  const correctedProfile = applyUpliftCorrection(currentProfile, upliftSettings);
+  const correctionApplied = correctedProfile !== currentProfile;
+
+  let profileToRender = correctedProfile;
+  if (correctionApplied && !upliftShowOriginalToggle.checked) {
+    const visibleDatasetIds = new Set(correctedProfile.visibleDatasetIds);
+    visibleDatasetIds.delete(upliftSettings.baseDatasetId);
+    profileToRender = { ...correctedProfile, visibleDatasetIds };
+  }
+
+  profileChart.render(profileToRender);
+  profileChart.setTitle(
+    correctionApplied
+      ? t("upliftAnnotationLabel", { upliftM: formatSignedMeters(upliftSettings.upliftM) })
+      : null,
+  );
 }
 
 function updateUpliftSettingsFromInputs(): void {
   const value = Number(upliftValueInput.value);
   upliftSettings.upliftM = value;
-  upliftSettings.enabled = upliftEnabledToggle.checked && Number.isFinite(value);
+  upliftSettings.enabled = Number.isFinite(value) && value !== 0;
+  upliftShowOriginalRow.hidden = !upliftSettings.enabled;
   upliftStyleRow.hidden = !upliftSettings.enabled;
   renderProfileWithUplift();
 }
 
 upliftValueInput.addEventListener("input", updateUpliftSettingsFromInputs);
-upliftEnabledToggle.addEventListener("change", updateUpliftSettingsFromInputs);
+upliftShowOriginalToggle.addEventListener("change", renderProfileWithUplift);
 
 function applyUpliftStyle(): void {
   const lineWidthPx = Number(upliftWidthInput.value);
