@@ -95,7 +95,7 @@ export const tileLayers: TileLayerConfig[] = [
 ];
 
 /** 初期表示する背景タイル。ユーザーはレイヤー切替コントロールでいつでも変更できる。 */
-export const defaultTileLayerId: string = "post-rainfall-ortho";
+export const defaultTileLayerId: string = "gsi-standard";
 
 /**
  * 比較対象とするDEM(COG)データセット一覧。運用者があらかじめ設定する(FR-006)。

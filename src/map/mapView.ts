@@ -19,11 +19,7 @@ const ELEVATION_CHANGE_TILE_URL =
 const GEOLOGY_TILE_URL =
   "https://gbank.gsj.jp/geonavi/maptile/wmts/1.0.0/G50_10_003004006007suzumisaki-notoiida/default/EPSG900913/{z}/{y}/{x}.png";
 
-/**
- * 能登半島北部4市町(輪島市・珠洲市・能登町・穴水町)を包含する範囲(002-expand-northern-noto、
- * EPSG:6675: x -43500〜17500, y 113000〜172500 の中心)を初期表示範囲とする。
- */
-const DEFAULT_CENTER: L.LatLngExpression = [37.28641, 137.020052];
+const DEFAULT_CENTER: L.LatLngExpression = [37.42449, 137.09087];
 const DEFAULT_ZOOM = 11;
 
 export interface MapViewHandles {
