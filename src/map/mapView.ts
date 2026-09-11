@@ -27,6 +27,10 @@ const GEOLOGY_TILE_URL =
 const GEOSTAT_PHI_TILE_URL = "https://yokayoka.github.io/geostat/tiles/phi_deg/{z}/{x}/{y}.png";
 const GEOSTAT_MU_TILE_URL = "https://yokayoka.github.io/geostat/tiles/mu_deg/{z}/{x}/{y}.png";
 
+/** 地質構造ラスター(Φ・μ)の凡例画像(カラーバー)の配信元(yokayoka/geostat、GitHub Pages)。 */
+const GEOSTAT_PHI_LEGEND_URL = "https://yokayoka.github.io/geostat/legend/phi_deg_legend.png";
+const GEOSTAT_MU_LEGEND_URL = "https://yokayoka.github.io/geostat/legend/mu_deg_legend.png";
+
 const DEFAULT_CENTER: L.LatLngExpression = [37.42449, 137.09087];
 const DEFAULT_ZOOM = 11;
 
@@ -126,14 +130,26 @@ export function initMapView(containerId: string): MapViewHandles {
   const layersControl = L.control.layers(baseLayers, overlayLayers, { collapsed: true }).addTo(map);
 
   const elevationChangeLegendControl = createElevationChangeLegendControl();
+  const geostatPhiLegendControl = createImageLegendControl(
+    t("geostatPhiLayerName"),
+    GEOSTAT_PHI_LEGEND_URL,
+  );
+  const geostatMuLegendControl = createImageLegendControl(
+    t("geostatMuLayerName"),
+    GEOSTAT_MU_LEGEND_URL,
+  );
+  const overlayLegendControls = new Map<L.Layer, L.Control>([
+    [elevationChangeLayer, elevationChangeLegendControl],
+    [geostatPhiLayer, geostatPhiLegendControl],
+    [geostatMuLayer, geostatMuLegendControl],
+  ]);
   map.on("overlayadd", (event: L.LayersControlEvent) => {
-    if (event.layer === elevationChangeLayer) {
-      elevationChangeLegendControl.addTo(map);
-    }
+    overlayLegendControls.get(event.layer)?.addTo(map);
   });
   map.on("overlayremove", (event: L.LayersControlEvent) => {
-    if (event.layer === elevationChangeLayer) {
-      map.removeControl(elevationChangeLegendControl);
+    const control = overlayLegendControls.get(event.layer);
+    if (control) {
+      map.removeControl(control);
     }
   });
 
@@ -189,6 +205,29 @@ function createElevationChangeLegendControl(): L.Control {
       item.appendChild(document.createTextNode(formatElevationRangeLabel(entry.low, entry.high)));
       div.appendChild(item);
     }
+
+    return div;
+  };
+
+  return legend;
+}
+
+/** 凡例画像(カラーバー)を表示するコントロールを生成する(地質構造Φ・μオーバーレイの表示中のみ地図に追加)。 */
+function createImageLegendControl(title: string, imageUrl: string): L.Control {
+  const legend = new L.Control({ position: "bottomleft" });
+
+  legend.onAdd = () => {
+    const div = L.DomUtil.create("div", "legend image-legend");
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "legend-title";
+    titleEl.textContent = title;
+    div.appendChild(titleEl);
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = title;
+    div.appendChild(img);
 
     return div;
   };
