@@ -19,6 +19,14 @@ const ELEVATION_CHANGE_TILE_URL =
 const GEOLOGY_TILE_URL =
   "https://gbank.gsj.jp/geonavi/maptile/wmts/1.0.0/G50_10_003004006007suzumisaki-notoiida/default/EPSG900913/{z}/{y}/{x}.png";
 
+/**
+ * 地質構造ラスター(Φ・μ)のタイル配信元(yokayoka/geostat、GitHub Pages)。
+ * 走向傾斜データのKriging補間から算出したΦ(地形面と地層面のなす角)・μ(地形走向と交線のなす角)を
+ * 色分けしたPNGタイル(ネイティブズームは8〜15)。生成手順は G:\マイドライブ\IPU_Share\geostat を参照。
+ */
+const GEOSTAT_PHI_TILE_URL = "https://yokayoka.github.io/geostat/tiles/phi_deg/{z}/{x}/{y}.png";
+const GEOSTAT_MU_TILE_URL = "https://yokayoka.github.io/geostat/tiles/mu_deg/{z}/{x}/{y}.png";
+
 const DEFAULT_CENTER: L.LatLngExpression = [37.42449, 137.09087];
 const DEFAULT_ZOOM = 11;
 
@@ -92,9 +100,27 @@ export function initMapView(containerId: string): MapViewHandles {
     opacity: 0.7,
   });
 
+  const geostatPhiLayer = L.tileLayer(GEOSTAT_PHI_TILE_URL, {
+    attribution: t("geostatPhiAttribution"),
+    minZoom: 8,
+    maxNativeZoom: 15,
+    maxZoom: 18,
+    opacity: 0.5,
+  });
+
+  const geostatMuLayer = L.tileLayer(GEOSTAT_MU_TILE_URL, {
+    attribution: t("geostatMuAttribution"),
+    minZoom: 8,
+    maxNativeZoom: 15,
+    maxZoom: 18,
+    opacity: 0.5,
+  });
+
   const overlayLayers: Record<string, L.Layer> = {
     [t("elevationChangeLayerName")]: elevationChangeLayer,
     [t("geologyLayerName")]: geologyLayer,
+    [t("geostatPhiLayerName")]: geostatPhiLayer,
+    [t("geostatMuLayerName")]: geostatMuLayer,
   };
 
   const layersControl = L.control.layers(baseLayers, overlayLayers, { collapsed: true }).addTo(map);

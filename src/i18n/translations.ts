@@ -30,6 +30,10 @@ export type TranslationKey =
   | "elevationChangeLegendTitle"
   | "geologyLayerName"
   | "geologyAttribution"
+  | "geostatPhiLayerName"
+  | "geostatPhiAttribution"
+  | "geostatMuLayerName"
+  | "geostatMuAttribution"
   | "chartAxisDistance"
   | "chartAxisElevation"
   | "kmlTransectName"
@@ -73,6 +77,10 @@ const ja: Translations = {
   elevationChangeLegendTitle: "地形変化量(5m色別)",
   geologyLayerName: "能登飯田地質図(産総研)",
   geologyAttribution: "出典: 産業技術総合研究所 地質調査総合センター シームレス地質図(能登飯田)",
+  geostatPhiLayerName: "地質構造Φ(地形面と地層面のなす角)",
+  geostatPhiAttribution: "出典: 地質構造の空間補間解析(geostat, yokayoka/geostat)",
+  geostatMuLayerName: "地質構造μ(地形走向と交線のなす角)",
+  geostatMuAttribution: "出典: 地質構造の空間補間解析(geostat, yokayoka/geostat)",
   chartAxisDistance: "始点からの距離 (m)",
   chartAxisElevation: "標高 (m)",
   kmlTransectName: "測線",
@@ -117,6 +125,12 @@ const en: Translations = {
   geologyLayerName: "Noto Iida geological map (AIST)",
   geologyAttribution:
     "Source: Geological Survey of Japan, AIST, Seamless Digital Geological Map of Japan (Noto Iida)",
+  geostatPhiLayerName: "Geological structure Φ (angle between terrain and bedding surfaces)",
+  geostatPhiAttribution:
+    "Source: Spatial interpolation of geological structure (geostat, yokayoka/geostat)",
+  geostatMuLayerName: "Geological structure μ (angle between terrain strike and intersection line)",
+  geostatMuAttribution:
+    "Source: Spatial interpolation of geological structure (geostat, yokayoka/geostat)",
   chartAxisDistance: "Distance from start (m)",
   chartAxisElevation: "Elevation (m)",
   kmlTransectName: "Transect",
